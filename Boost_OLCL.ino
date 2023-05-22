@@ -27,6 +27,11 @@ boolean CL_mode = 0;
 unsigned int loopTrigger;
 unsigned int com_count=0;   // a variables to count the interrupts. Used for program debugging.
 
+/////////////////////////////
+float Power_now = 0, Power_anc = 0, voltage_anc = 0;
+float delta = 0.01;
+
+
 void setup() {
 
   //Basic pin setups
@@ -69,14 +74,18 @@ void setup() {
     Boost_mode = digitalRead(2); // input from the Buck_Boost switch
 
     if (Boost_mode){
-      if (CL_mode) { // Closed Loop Boost
+      if (CL_mode) { // Closed Loop Buck
+          // The closed loop path has a voltage controller cascaded with a current controller. The voltage controller
+          // creates a current demand based upon the voltage error. This demand is saturated to give current limiting.
+          // The current loop then gives a duty cycle demand based upon the error between demanded current and measured
+          // current
           current_limit = 0.69; 
           ev = vref - vb;  //voltage error at this time
           cv=pidv(ev);  //voltage pid
           cv=saturation(cv, current_limit, 0); //current demand saturation
           ei=cv-iL; //current error
-          closed_loop=pidi(ei);  //current pid
-          closed_loop=saturation(closed_loop,0.01,0.99);  //duty_cycle saturation
+          closed_loop=pidiBoost(ei);  //current pid
+          closed_loop=saturation(closed_loop,0.99,0.01);  //duty_cycle saturation
           pwm_modulate(closed_loop); //pwm modulation
       }else{ // Open Loop Boost
           current_limit = 2; // 
@@ -143,6 +152,13 @@ void setup() {
     digitalWrite(13, LOW);   // reset pin13.
     loopTrigger = 0;
   }
+
+  ////////////////////////////////////////////////////////////
+  //MPPT
+  Power_now
+
+  
+  ////////////////////////////////////////////////////////////
 }
 
 
@@ -242,6 +258,30 @@ float pidi(float pid_input){
   
   delta_ui = kpi*(e0i-e1i) + kii*Ts*e_integration + kdi/Ts*(e0i-2*e1i+e2i); //incremental PID programming avoids integrations.
   u0i = u1i + delta_ui;  //this time's control output
+
+  //output limitation
+  saturation(u0i,ui_max,ui_min);
+  
+  u1i = u0i; //update last time's control output
+  e2i = e1i; //update last last time's error
+  e1i = e0i; // update last time's error
+  return u0i;
+}
+
+float pidiBoost(float pid_input){
+  float e_integration;
+  e0i = pid_input;
+  e_integration=e0i;
+  
+  //anti-windup
+  if(u1i >= ui_max){
+    e_integration = 0;
+  } else if (u1i <= ui_min) {
+    e_integration = 0;
+  }
+  
+  delta_ui = kpi*(e0i-e1i) + kii*Ts*e_integration + kdi/Ts*(e0i-2*e1i+e2i); //incremental PID programming avoids integrations.
+  u0i = u1i - delta_ui;  //this time's control output
 
   //output limitation
   saturation(u0i,ui_max,ui_min);
