@@ -69,8 +69,15 @@ void setup() {
     Boost_mode = digitalRead(2); // input from the Buck_Boost switch
 
     if (Boost_mode){
-      if (CL_mode) { //Closed Loop Boost
-          pwm_modulate(1); // This disables the Boost as we are not using this mode
+      if (CL_mode) { // Closed Loop Boost
+          current_limit = 0.69; 
+          ev = vref - vb;  //voltage error at this time
+          cv=pidv(ev);  //voltage pid
+          cv=saturation(cv, current_limit, 0); //current demand saturation
+          ei=cv-iL; //current error
+          closed_loop=pidi(ei);  //current pid
+          closed_loop=saturation(closed_loop,0.01,0.99);  //duty_cycle saturation
+          pwm_modulate(closed_loop); //pwm modulation
       }else{ // Open Loop Boost
           current_limit = 2; // 
           oc = iL-current_limit; // Calculate the difference between current measurement and current limit
