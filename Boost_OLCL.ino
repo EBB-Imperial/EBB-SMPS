@@ -28,8 +28,8 @@ unsigned int loopTrigger;
 unsigned int com_count=0;   // a variables to count the interrupts. Used for program debugging.
 
 /////////////////////////////
-float Power_now = 0, Power_anc = 0, voltage_anc = 0;
-float delta = 0.01;
+float Power_now = 0, Power_prev = 0, Voltage_prev = 0;
+float delta = 0.1;
 
 
 void setup() {
@@ -155,9 +155,25 @@ void setup() {
 
   ////////////////////////////////////////////////////////////
   //MPPT
-  Power_now
-
+  Power_now = vb * iL; // Calculate current power from Vin and IL
+  if(Power_now > Power_prev)
+  {
+    if(vb > Volatge_prev) 
+      vref = vref + delta;
+    else
+      vref = vref - delta;
+  }
+  else
+  {
+    if(vb > Volatge_prev) 
+      vref = vref - delta;
+    else
+      vref = vref + delta;
+  }  
   
+  Power_prev = Power_now; // store Power_now to be Power_prev for the next round
+  Voltage_prev = vb; // store Voltage now to be Voltage_Prev for the next round
+   
   ////////////////////////////////////////////////////////////
 }
 
@@ -177,7 +193,7 @@ void sampling(){
   // Make the initial sampling operations for the circuit measurements
   
   sensorValue0 = analogRead(A0); //sample Vb
-  sensorValue2 = analogRead(A2); //sample Vref
+  //sensorValue2 = analogRead(A2); //sample Vref
   sensorValue3 = analogRead(A3); //sample Va
   current_mA = ina219.getCurrent_mA(); // sample the inductor current (via the sensor chip)
 
@@ -186,7 +202,7 @@ void sampling(){
   // representing a voltage between 0 and the analogue reference which is 4.096V
   
   vb = sensorValue0 * (12400/2400) * (4.096 / 1023.0); // Convert the Vb sensor reading to volts
-  vref = sensorValue2 * (4.096 / 1023.0); // Convert the Vref sensor reading to volts
+  //vref = sensorValue2 * (4.096 / 1023.0); // Convert the Vref sensor reading to volts
   va = sensorValue3 * (12400/2400) *  (4.096 / 1023.0); // Convert the Va sensor reading to volts
 
   // The inductor current is in mA from the sensor so we need to convert to amps.
