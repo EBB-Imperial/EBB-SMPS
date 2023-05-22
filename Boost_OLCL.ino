@@ -155,22 +155,23 @@ void setup() {
 
   ////////////////////////////////////////////////////////////
   //MPPT
+    //Pertub and Observe + Incremental Conductance
   Power_now = vb * iL; // Calculate current power from Vin and IL
-  if(Power_now > Power_prev)
-  {
+  if(Power_now > Power_prev)  
+  {   // deltaP > 0
     if(vb > Volatge_prev) 
-      vref = vref + delta;
+      vref = vref + delta;  //deltaV > 0 & deltaP > 0 => positive slope => V++
     else
-      vref = vref - delta;
+      vref = vref - delta;  //deltaV < 0 & deltaP > 0 => negative slope => V--
   }
-  else
-  {
+  else  
+  {   //deltaP < 0
     if(vb > Volatge_prev) 
-      vref = vref - delta;
+      vref = vref - delta;  //deltaV > 0 & deltaP < 0 => negative slope => V--
     else
-      vref = vref + delta;
+      vref = vref + delta;  //deltaV < 0 & deltaP < 0 => positive slope => V++
   }  
-  
+  //Memory 
   Power_prev = Power_now; // store Power_now to be Power_prev for the next round
   Voltage_prev = vb; // store Voltage now to be Voltage_Prev for the next round
    
