@@ -12,6 +12,12 @@ INA219_WE ina219; // this is the instantiation of the library for the current se
 
 float open_loop, closed_loop; // Duty Cycles
 float va,vb,vref,iL,dutyref,current_mA; // Measurement Variables
+
+float Power_now = 0;
+float Power_prev = 0;
+float Voltage_prev = 0;
+float delta = 0.1;
+
 unsigned int sensorValue0,sensorValue1,sensorValue2,sensorValue3;  // ADC sample values declaration
 float ev=0,cv=0,ei=0,oc=0; //internal signals
 float Ts=0.001; //1 kHz control frequency. It's better to design the control period as integral multiple of switching period.
@@ -27,9 +33,6 @@ boolean CL_mode = 0;
 unsigned int loopTrigger;
 unsigned int com_count=0;   // a variables to count the interrupts. Used for program debugging.
 
-/////////////////////////////
-float Power_now = 0, Power_prev = 0, Voltage_prev = 0;
-float delta = 0.1;
 
 
 void setup() {
@@ -159,14 +162,14 @@ void setup() {
   Power_now = vb * iL; // Calculate current power from Vin and IL
   if(Power_now > Power_prev)  
   {   // deltaP > 0
-    if(vb > Volatge_prev) 
+    if(vb > Voltage_prev) 
       vref = vref + delta;  //deltaV > 0 & deltaP > 0 => positive slope => V++
     else
       vref = vref - delta;  //deltaV < 0 & deltaP > 0 => negative slope => V--
   }
   else  
   {   //deltaP < 0
-    if(vb > Volatge_prev) 
+    if(vb > Voltage_prev) 
       vref = vref - delta;  //deltaV > 0 & deltaP < 0 => negative slope => V--
     else
       vref = vref + delta;  //deltaV < 0 & deltaP < 0 => positive slope => V++
