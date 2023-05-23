@@ -171,6 +171,13 @@ void setup() {
     else
       vref = vref + delta;  //deltaV < 0 & deltaP < 0 => positive slope => V++
   }  
+   
+  //Voltage boundaries
+  if(vref > 18)
+    vref = 18;
+  if(vref < 7)
+    vref = 7;
+   
   //Memory 
   Power_prev = Power_now; // store Power_now to be Power_prev for the next round
   Voltage_prev = vb; // store Voltage now to be Voltage_Prev for the next round
