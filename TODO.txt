@@ -1,3 +1,12 @@
 (Done) - Characterise PV Model (Measuring)
 (Done) - Finish coding for MPPT
 (Done) - Test MPPT armed SMPS with PSU and pot
+
+- Updating MPPT Algorithm
+  - achieve stable track
+  - avoid rabbit hole
+- Address volatge drop problem of Boost_MPPT
+  - 7V above needed in DC grid while Boost_MPPT drops with low input voltage
+- Coding and testing for Bidirectional SMPS for mega capacitor
+  - (MAIN ISSUE) Conditions for charging/discharging
+  - Bidirectional actualizatiom by passing DigitalRead  
