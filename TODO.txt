@@ -2,9 +2,9 @@
 (Done) - Finish coding for MPPT
 (Done) - Test MPPT armed SMPS with PSU and pot
 
-- Update MPPT Algorithm
-  - achieve stable track
-  - avoid rabbit hole
+(Done) - Update MPPT Algorithm
+(Done)  - achieve stable track
+(Done)  - avoid rabbit hole
 - Address volatge drop problem of Boost_MPPT
   - 7V above needed in DC grid while Boost_MPPT drops with low input voltage
 - Coding and testing for Bidirectional SMPS for mega capacitor
