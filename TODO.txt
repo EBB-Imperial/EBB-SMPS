@@ -2,7 +2,7 @@
 (Done) - Finish coding for MPPT
 (Done) - Test MPPT armed SMPS with PSU and pot
 
-- Updating MPPT Algorithm
+- Update MPPT Algorithm
   - achieve stable track
   - avoid rabbit hole
 - Address volatge drop problem of Boost_MPPT
