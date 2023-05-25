@@ -9,4 +9,4 @@
   - 7V above needed in DC grid while Boost_MPPT drops with low input voltage
 - Coding and testing for Bidirectional SMPS for mega capacitor
   - (MAIN ISSUE) Conditions for charging/discharging
-  - Bidirectional actualizatiom by passing DigitalRead  
+  - Bidirectional actualization bypassing DigitalRead  
