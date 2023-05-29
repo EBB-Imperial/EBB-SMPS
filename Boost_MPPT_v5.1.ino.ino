@@ -18,7 +18,7 @@ float Power_now = 0;
 float Power_prev = 0;
 float Voltage_prev = 0;
 float closed_loop = 0.02;
-float delta_min=0.005;
+float delta_min = 0.005;
 float rate_of_change_of_power = abs(Power_now-Power_prev)/delta;
 float threshold_low = 5;
 
