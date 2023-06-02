@@ -83,31 +83,31 @@ void setup() {
           if(Power_now > Power_prev)  
           {   // deltaP > 0
             if(vb > Voltage_prev) 
-              closed_loop = closed_loop + delta;  //deltaV > 0 & deltaP > 0 => positive slope => V+
+              closed_loop = closed_loop - delta;  //deltaV > 0 & deltaP > 0 => positive slope => V+
             else
-              closed_loop = closed_loop - delta;  //deltaV < 0 & deltaP > 0 => negative slope => V-
+              closed_loop = closed_loop + delta;  //deltaV < 0 & deltaP > 0 => negative slope => V-
           }
           else  
           {   //deltaP < 0
             if(vb > Voltage_prev) 
-              closed_loop = closed_loop - delta;  //deltaV > 0 & deltaP < 0 => negative slope => V-
+              closed_loop = closed_loop + delta;  //deltaV > 0 & deltaP < 0 => negative slope => V-
             else
-              closed_loop = closed_loop + delta;  //deltaV < 0 & deltaP < 0 => positive slope => V+
+              closed_loop = closed_loop - delta;  //deltaV < 0 & deltaP < 0 => positive slope => V+
           } 
           
            
           //Voltage boundaries
           if(va > 18)
-            closed_loop = closed_loop - delta;
-          if(va < 7)
             closed_loop = closed_loop + delta;
+          if(va < 7)
+            closed_loop = closed_loop _ delta;
            
           //Memory 
           Power_prev = Power_now; // store Power_now to be Power_prev for the next round
           Voltage_prev = vb; // store Voltage now to be Voltage_Prev for the next round
 
           //PWM
-          close_loop=saturation(close_loop,0.80,0.01);
+          close_loop=saturation(close_loop,0.99,0.2);
           pwm_modulate(closed_loop);
           ////////////////////////////////////////////////////////////
       }
