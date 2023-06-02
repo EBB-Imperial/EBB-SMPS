@@ -1,7 +1,8 @@
 #include "pico/stdlib.h"
 
-from 
-from machine import Pin, PWM
+
+from machine import Pin, PWM，ADC, I2C
+from ina219 import INA219  #应该不会用到 但是先写在这
 
 va, vb, vref, iL, current_mA
 ev=0, cv=0,ei=0,oc=0
@@ -23,12 +24,13 @@ int main() { # 初始化代码放在这里 这里相当于void setup
     adc_gpio_init(GPIO_PIN1); # 配置GPIO_PIN1为ADC输入引脚
     adc_gpio_init(GPIO_PIN2); # 配置GPIO_PIN2为ADC输入引脚
     
+    #这里的引脚看的有点迷糊
     
     
 
 
 
-while (1) {  # 主循环代码放在这里
+while (1) {  # 主循环代码放在这里 相当于void loop
      
      adc_select_input(0); # 选择ADC通道0，对应GPIO_PIN1
       uint16_t result1 = adc_read(); # 读取引脚1的ADC值
@@ -36,7 +38,7 @@ while (1) {  # 主循环代码放在这里
       adc_select_input(1); # 选择ADC通道1，对应GPIO_PIN2
       uint16_t result2 = adc_read(); # 读取引脚2的ADC值
 
-      # Assuming e0v, e1v, e2v, u0v, u1v, kpv, kiv, kdv, Ts, uv_max, uv_min are all defined elsewhere
+      # e0v, e1v, e2v, u0v, u1v, kpv, kiv, kdv, Ts, uv_max, uv_min are all defined before
 
  def pidv(pid_input):
     e_integration = e0v = pid_input
@@ -55,7 +57,7 @@ while (1) {  # 主循环代码放在这里
     e2v = e1v # update last last time's error
     e1v = e0v # update last time's error
     return u0v
-# Assuming e0i, e1i, e2i, u0i, u1i, kpi, kii, kdi, Ts, ui_max, ui_min are all defined elsewhere
+# e0i, e1i, e2i, u0i, u1i, kpi, kii, kdi, Ts, ui_max, ui_min are all defined before
 
  def pidi(pid_input):
     e_integration = e0i = pid_input
@@ -94,7 +96,7 @@ def pwm_modulate(pwm_input):
       cv = pidv(ev)  #voltage pid
       cv = saturation(cv, current_limit, 0) #current demand saturation
 
-# Assuming iL is defined somewhere else
+      # iL is defined bbefore
       ei = cv - iL #current error
 
       closed_loop = pidi(ei)  #current pid
