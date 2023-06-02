@@ -15,7 +15,9 @@ uv_max=4,uv_min=0
 ui_max=50,ui_min=0
 current_limit=0.5 #GitHub中提供的LED driver的 current limite= 500mA
 
-
+vret_pin = ADC(Pin(26))
+vout_pin = ADC(Pin(28))
+vin_pin = ADC(Pin(27))
 
 from machine import Pin, PWM
 
@@ -89,7 +91,7 @@ while (1) {  # 主循环代码放在这里 相当于void loop
 
 def pwm_modulate(pwm_input):
     pwm = PWM(Pin(?))  # create PWM object from a pin?  在Arduino中是Pin6 但是这里没懂是哪个PIN
-    pwm.freq(625000)     # set frequency
+    pwm.freq(100000)     # set frequency
     pwm.duty_u16(int((1 - pwm_input) * 65535)) # set duty cycle
     pass 
 
