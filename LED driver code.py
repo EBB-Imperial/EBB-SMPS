@@ -1,14 +1,14 @@
 #include "pico/stdlib.h"
 
 
-from machine import Pin, PWM，ADC, I2C
+from machine import Pin, PWM，ADC, I2C,PWM
 from ina219 import INA219  #应该不会用到 但是先写在这
 
 va, vb, vref, iL, current_mA
 ev=0, cv=0,ei=0,oc=0
 Ts=0.001
 kpv=0.05024,kiv=15.78,kdv=0;
-u0v,u1v,delta_ui,e0v,e1v,e2v;
+u0v,u1v,delta_uv,e0v,e1v,e2v;
 kpi=0.02512,kii=39.4,kdi=0
 u0i,u1i,delta_ui,e0i,e1i,e2i
 uv_max=4,uv_min=0
@@ -19,30 +19,10 @@ vret_pin = ADC(Pin(26))
 vout_pin = ADC(Pin(28))
 vin_pin = ADC(Pin(27))
 
-from machine import Pin, PWM
+
 
 int main() { # 初始化代码放在这里 这里相当于void setup
-    
-    adc_gpio_init(GPIO_PIN1); # 配置GPIO_PIN1为ADC输入引脚
-    adc_gpio_init(GPIO_PIN2); # 配置GPIO_PIN2为ADC输入引脚
-    
-    #这里的引脚看的有点迷糊
-    
-    
-
-
-
-while (1) {  # 主循环代码放在这里 相当于void loop
-     
-     adc_select_input(0); # 选择ADC通道0，对应GPIO_PIN1
-      uint16_t result1 = adc_read(); # 读取引脚1的ADC值
-
-      adc_select_input(1); # 选择ADC通道1，对应GPIO_PIN2
-      uint16_t result2 = adc_read(); # 读取引脚2的ADC值
-
-      # e0v, e1v, e2v, u0v, u1v, kpv, kiv, kdv, Ts, uv_max, uv_min are all defined before
-
- def pidv(pid_input):
+  def pidv(pid_input):
     e_integration = e0v = pid_input
     
     # anti-windup, if last-time pid output reaches the limitation, this time there won't be any integrations.
@@ -61,7 +41,7 @@ while (1) {  # 主循环代码放在这里 相当于void loop
     return u0v
 # e0i, e1i, e2i, u0i, u1i, kpi, kii, kdi, Ts, ui_max, ui_min are all defined before
 
- def pidi(pid_input):
+  def pidi(pid_input):
     e_integration = e0i = pid_input
     
     # anti-windup
@@ -80,7 +60,7 @@ while (1) {  # 主循环代码放在这里 相当于void loop
     return u0i
 
 
- def saturation(saturation_input, upper_lim, lower_lim):
+  def saturation(saturation_input, upper_lim, lower_lim):
       if saturation_input > upper_lim:
          saturation_input = upper_lim
       elif saturation_input < lower_lim:
@@ -89,12 +69,33 @@ while (1) {  # 主循环代码放在这里 相当于void loop
       
 # from machine import Pin, PWM
 
-def pwm_modulate(pwm_input):
-    pwm = PWM(Pin(?))  # create PWM object from a pin?  在Arduino中是Pin6 但是这里没懂是哪个PIN
+   def pwm_modulate(pwm_input):
+    pwm = PWM(Pin(0))  # create PWM object from a pin?  在Arduino中是Pin6 但是这里没懂是哪个PIN
     pwm.freq(100000)     # set frequency
     pwm.duty_u16(int((1 - pwm_input) * 65535)) # set duty cycle
     pass 
+    
+    #这里的引脚看的有点迷糊
+    
+    
 
+}
+
+
+while (1) {  # 主循环代码放在这里 相当于void loop
+     
+     adc_select_input(0); # 选择ADC通道0，对应GPIO_PIN1
+      uint16_t result1 = adc_read(); # 读取引脚1的ADC值
+
+      adc_select_input(1); # 选择ADC通道1，对应GPIO_PIN2
+      uint16_t result2 = adc_read(); # 读取引脚2的ADC值
+
+      # e0v, e1v, e2v, u0v, u1v, kpv, kiv, kdv, Ts, uv_max, uv_min are all defined before
+
+
+      current_limit = 3; # Buck has a higher current limit
+      ev = vref - vb;  # voltage error at this time
+      # vref 是voltage drop of LED 
       cv = pidv(ev)  #voltage pid
       cv = saturation(cv, current_limit, 0) #current demand saturation
 
