@@ -21,18 +21,21 @@ def read_v():
     pass
 
 def read_i():
-    imeas = vret_pin.read_u16() / 1.02
+    imeas = vret_pin / 1.02
     write_v = 
     return write_v - imeas
     pass
 
 # write_v 和 write_i 也应该是函数
 def write_v(value):
-    # 调整电压的代码
-    pass
+    duty = value * 62500  # 假设 value 的范围是 0 到 1
+    duty = saturate(duty)  # 限制 duty 在合理的范围内
+    pwm.duty_u16(duty)  # 设置 PWM 的占空比
 
 def write_i(value):
-    # 调整电流的代码
+    duty = value * 62500  # 假设 value 的范围是 0 到 1
+    duty = saturate(duty)  # 限制 duty 在合理的范围内
+    pwm.duty_u16(duty)  # 设置 PWM 的占空比
     pass
 
 pid_v = PID(read_v, write_v, P=0.02512, I=39.4, D=0)
