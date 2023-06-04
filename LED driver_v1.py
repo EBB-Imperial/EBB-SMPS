@@ -16,7 +16,8 @@ setpoint = 0.0
 delta = 0.05
 
 
-
+read_v = vref - vmeas
+read_i = write_v - imeas
 
 
 pid_i = PID(read_i, write_i, P=0.05024, I=15.78, D=0)
