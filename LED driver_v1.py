@@ -15,9 +15,8 @@ setpoint = 0.0
 delta = 0.05
 
 PIDvoltage = 0
-
 class PID:
-   def __init__(self, input_fun, output_fun, P=3., I=0.01, D=0.0):
+    def __init__(self, input_fun, output_fun, P=3., I=0.01, D=0.0, ui_max=100., ui_min=0., Ts=1.):
         self.Kp=P
         self.Ki=I
         self.Kd=D
@@ -26,62 +25,52 @@ class PID:
         self.P_value = 0
         self.D_value = 0
 
-        self.I_max=100.0
-        self.I_min=0
-
         self.set_point=0.0
-
         self.prev_value = 0
-
         self.output = 0
 
         self.output_fun = output_fun
         self.input_fun = input_fun
 
+        self.ui_max = ui_max
+        self.ui_min = ui_min
+
+        self.e0i = 0
+        self.e1i = 0
+        self.e2i = 0
+        self.u0i = 0
+        self.u1i = 0
+        self.delta_ui = 0
+        self.Ts = Ts  # Sample time
+
         self.last_update_time = ticks_ms()
 
-   def update(self):
+    def update(self):
 
         if ticks_ms() - self.last_update_time > 500:
-            """
-            Calculate PID output value for given reference input and feedback
-            """
-            current_value = self.input_fun()
-            self.error = self.set_point - current_value
-            print ('temp '+str(current_value))
-            print ('SP'+str(self.set_point))
 
-            self.P_value = self.Kp * self.error
-            self.D_value = self.Kd * ( current_value-self.prev_value)
+            self.e0i = self.set_point - self.input_fun()
 
+            #anti-windup
+            e_integration = self.e0i
+            if self.u1i >= self.ui_max or self.u1i <= self.ui_min:
+                e_integration = 0
 
-            lapsed_time = ticks_ms() - self.last_update_time
-            lapsed_time /= 1000. #convert to seconds
-            self.last_update_time = ticks_ms()
+            self.delta_ui = self.Kp * (self.e0i - self.e1i) + self.Ki * self.Ts * e_integration + self.Kd / self.Ts * (self.e0i - 2 * self.e1i + self.e2i)
 
-            self.I_value += self.error * self.Ki
+            self.u0i = self.u1i + self.delta_ui  #this time's control output
 
-            if self.I_value > self.I_max:
-                self.I_value = self.I_max
-            elif self.I_value < self.I_min:
-                self.I_value = self.I_min
+            #output limitation
+            self.u0i = max(min(self.u0i, self.ui_max), self.ui_min)
+            
+            self.u1i = self.u0i  # update last time's control output
+            self.e2i = self.e1i  # update last last time's error
+            self.e1i = self.e0i  # update last time's error
 
-            self.output = self.P_value + self.I_value - self.D_value
-
-            if self.output < 0:
-                self.output = 0.0
-            if self.output > 100:
-                self.output = 100.0
-
-            print("Setpoint: "+str(self.set_point))
-            print("P: "+str(self.P_value))
-            print("I: "+str(self.I_value))
-            print("Output: "+str(self.output))
-            print ()
-
-            self.output_fun(self.output / 100.0)
+            self.output_fun(self.u0i / 100.0)
 
             self.last_update_time = ticks_ms()
+
 
 
 
