@@ -1,5 +1,6 @@
 from machine import Pin, ADC, PWM
 from pid import PID
+from  import pyb
 
 vret_pin = ADC(Pin(26))
 vout_pin = ADC(Pin(28))
@@ -13,7 +14,10 @@ pwm_ref = 0
 setpoint = 0.0
 delta = 0.05
 
-def __init__(self,input_fun,output_fun, P=3., I=0.01, D=0.0):
+PIDvoltage = 0
+
+class PID:
+   def __init__(self,input_fun,output_fun, P=3., I=0.01, D=0.0):
 
         self.Kp=P
         self.Ki=I
@@ -81,7 +85,6 @@ def update(self):
             self.output_fun(self.output/100.0)
 
             self.last_update_time=pyb.millis()
-            return 
 
 
 def read_v():
@@ -92,23 +95,31 @@ def read_v():
 
 def read_i():
     imeas = vret_pin.read_u16() / 1.02
-    write_v = 
+    write_v = PIDvoltage
     return write_v - imeas
     pass
 
 # write_v 和 write_i 也应该是函数
+
+#def write_v(value):
+#    duty = value * 62500  # 假设 value 的范围是 0 到 1
+#   duty = saturate(duty)  # 限制 duty 在合理的范围内
+#    pwm.duty_u16(duty)  # 设置 PWM 的占空比
+
+
 def write_v(value):
-    duty = value * 62500  # 假设 value 的范围是 0 到 1
-    duty = saturate(duty)  # 限制 duty 在合理的范围内
-    pwm.duty_u16(duty)  # 设置 PWM 的占空比
+    global PIDvoltage
+    PIDvoltage = value
+    return PIDvoltage
 
 def write_i(value):
-    duty = value * 62500  # 假设 value 的范围是 0 到 1
+    duty = value  # 假设 value 的范围是 0 到 1
     duty = saturate(duty)  # 限制 duty 在合理的范围内
     pwm.duty_u16(duty)  # 设置 PWM 的占空比
     pass
 
 pid_v = PID(read_v, write_v, P=0.02512, I=39.4, D=0)
+
 pid_i = PID(read_i, write_i, P=0.05024, I=15.78, D=0)
 
 def saturate(duty):
