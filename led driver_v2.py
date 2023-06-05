@@ -40,6 +40,7 @@ def pidi(pid_input):
     if u1i >= ui_max or u1i <= ui_min:
         e_integration = 0
 
+
     delta_ui = Kp * (e0i - e1i) + Ki * Ts * e_integration + Kd / Ts * (e0i - 2 * e1i + e2i)
 
     u0i = u1i + delta_ui  # this time's control output
@@ -76,13 +77,18 @@ while True:
     pwm_out = int(pidi(pid_input))
     pwm.duty_u16(pwm_out)
    
-    sleep_ms(50)
+    
+    Vin = vin/65536
+    Vout = vout/65536
+    Vret = vret/65536
+    Pwm_out =pwm_out/65536
+    
 
     if count > 2000:
-        print("Vin = {:.0f}".format(vin))
-        print("Vout = {:.0f}".format(vout))
-        print("Vret = {:.0f}".format(vret))
-        print("Duty = {:.0f}".format(pwm_out))
+        print("Vin = {:.0f}".format(Vin))
+        print("Vout = {:.0f}".format(Vout))
+        print("Vret = {:.0f}".format(Vret))
+        print("Duty = {:.0f}".format(Pwm_out))
 
         count = 0
 
