@@ -1,6 +1,6 @@
 from machine import Pin, ADC, PWM
-from pid import PID
-from  import pyb
+from utime import sleep_ms, ticks_ms
+
 
 vret_pin = ADC(Pin(26))
 vout_pin = ADC(Pin(28))
@@ -17,8 +17,7 @@ delta = 0.05
 PIDvoltage = 0
 
 class PID:
-   def __init__(self,input_fun,output_fun, P=3., I=0.01, D=0.0):
-
+   def __init__(self, input_fun, output_fun, P=3., I=0.01, D=0.0):
         self.Kp=P
         self.Ki=I
         self.Kd=D
@@ -39,12 +38,11 @@ class PID:
         self.output_fun = output_fun
         self.input_fun = input_fun
 
-        self.last_update_time = pyb.millis()
+        self.last_update_time = ticks_ms()
 
+   def update(self):
 
-def update(self):
-
-        if pyb.millis()-self.last_update_time > 500:
+        if ticks_ms() - self.last_update_time > 500:
             """
             Calculate PID output value for given reference input and feedback
             """
@@ -57,10 +55,9 @@ def update(self):
             self.D_value = self.Kd * ( current_value-self.prev_value)
 
 
-            lapsed_time = pyb.millis()-self.last_update_time
-            lapsed_time/=1000. #convert to seconds
-            self.last_update_time = pyb.millis()
-
+            lapsed_time = ticks_ms() - self.last_update_time
+            lapsed_time /= 1000. #convert to seconds
+            self.last_update_time = ticks_ms()
 
             self.I_value += self.error * self.Ki
 
@@ -71,9 +68,9 @@ def update(self):
 
             self.output = self.P_value + self.I_value - self.D_value
 
-            if self.output<0:
+            if self.output < 0:
                 self.output = 0.0
-            if self.output>100:
+            if self.output > 100:
                 self.output = 100.0
 
             print("Setpoint: "+str(self.set_point))
@@ -82,9 +79,10 @@ def update(self):
             print("Output: "+str(self.output))
             print ()
 
-            self.output_fun(self.output/100.0)
+            self.output_fun(self.output / 100.0)
 
-            self.last_update_time=pyb.millis()
+            self.last_update_time = ticks_ms()
+
 
 
 def read_v():
@@ -99,13 +97,6 @@ def read_i():
     return write_v - imeas
     pass
 
-# write_v 和 write_i 也应该是函数
-
-#def write_v(value):
-#    duty = value * 62500  # 假设 value 的范围是 0 到 1
-#   duty = saturate(duty)  # 限制 duty 在合理的范围内
-#    pwm.duty_u16(duty)  # 设置 PWM 的占空比
-
 
 def write_v(value):
     global PIDvoltage
@@ -118,9 +109,9 @@ def write_i(value):
     pwm.duty_u16(duty)  # 设置 PWM 的占空比
     pass
 
-pid_v = PID(read_v, write_v, P=0.02512, I=39.4, D=0)
+pid_v = PID(read_v, write_v, P=0.05024, I=15.78, D=0)
 
-pid_i = PID(read_i, write_i, P=0.05024, I=15.78, D=0)
+pid_i = PID(read_i, write_i, P=0.02512, I=39, D=0)
 
 def saturate(duty):
     if duty > 62500:
@@ -141,10 +132,10 @@ while True:
     pwm_out = saturate(pwm_ref)
     pwm.duty_u16(pwm_out)
 
-    
-    pid_i.update()
     pid_v.update()
-    pyb.delay(50)
+    pid_i.update()
+   
+    sleep_ms(50)
 
     if count > 2000:
         print("Vin = {:.0f}".format(vin))
@@ -153,3 +144,4 @@ while True:
         print("Duty = {:.0f}".format(pwm_out))
 
         count = 0
+
