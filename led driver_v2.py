@@ -46,7 +46,7 @@ def pidi(pid_input):
     u0i = u1i + delta_ui  # this time's control output
 
     # output limitation
-    u0i = saturation(u0i)
+    u0i = saturate(u0i)
 
     u1i = u0i  # update last time's control output
     e2i = e1i  # update last last time's error
@@ -85,10 +85,10 @@ while True:
     
 
     if count > 2000:
-        print("Vin = {:.0f}".format(Vin))
-        print("Vout = {:.0f}".format(Vout))
-        print("Vret = {:.0f}".format(Vret))
-        print("Duty = {:.0f}".format(Pwm_out))
+        print("Vin = {:.0f}".format(vin))
+        print("Vout = {:.0f}".format(vout))
+        print("Vret = {:.0f}".format(vret))
+        print("Duty = {:.0f}".format(pwm_out))
 
         count = 0
 
