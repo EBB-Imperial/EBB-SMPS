@@ -72,7 +72,7 @@ while True:
     count = count + 1
     iL = vret/1.02
     
-    ei=iref*-iL
+    ei=iref-iL
     pid_input = ei  # Replace with your actual PID input
     pwm_out = int(pidi(pid_input))
     pwm.duty_u16(pwm_out)
