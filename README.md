@@ -8,6 +8,8 @@
 
 
 ## MPPT
+![MPP_graph](https://github.com/EBB-Imperial/EBB-SMPS/blob/main/MPP_Graph.jpg)
+
 ![MPPT Flowchart](https://github.com/EBB-Imperial/EBB-SMPS/blob/main/MPPT.png)
 
 The code for MPPT implementation:
@@ -15,17 +17,9 @@ The code for MPPT implementation:
 
 ## Using your LEDs from a PSU
 
-### Functional requirements
-
-
-### Non-functional requirements
-
-
-
-
-
 ## LED Driver 
-
+The code for LED Driver:
+[Click here to access the folder](https://github.com/EBB-Imperial/EBB-SMPS/tree/main/MPPT)
 
 
 
