@@ -6,10 +6,6 @@
 
 ## Emulating a PV panel
 
-You are requested to design and build a balancing robot (segway) that can autonomously map and navigate a maze. A prototype of the design must be built and tested in the artificial maze in the lab. The maze is laid out with light strips on an arena. The arena is coloured black and surrounded by black curtains.
-
-![My Image][def]
-
 ## Using your LEDs from a PSU
 
 ### Functional requirements
@@ -19,10 +15,9 @@ You are requested to design and build a balancing robot (segway) that can autono
 
 
 ## MPPT
-
+![My image][https://github.com/EBB-Imperial/EBB-SMPS/blob/main/MPPT.png]
 ## LED Driver 
 
 
 
 
-[def]: https://github.com/EBB-Imperial/EBB-SMPS/blob/main/MPPT.png
