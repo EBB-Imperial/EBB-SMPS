@@ -6,7 +6,7 @@ The best pv panels test result(sheet PV panels):
 https://github.com/EBB-Imperial/EBB-SMPS/blob/main/data%20and%20plots-2.xlsx
 
 ## Emulating a PV panel
-The best test result for PV panel emulation(EPV3):
+The best test result for PV panel emulation(sheet EPV3):
 
 [https://github.com/EBB-Imperial/EBB-SMPS/blob/main/data%20and%20plots-2.xlsx]
 ## MPPT
