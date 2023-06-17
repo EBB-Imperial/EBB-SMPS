@@ -14,16 +14,16 @@ float open_loop; // Duty Cycles
 float va,vb,vref,iL,dutyref,current_mA; // Measurement Variables
 
 
-float Power_now = 0;
-float Power_prev = 0;
-float Voltage_prev = 0;
-float closed_loop = 0.02;
+float Power_now = 0;  // Input power measured now
+float Power_prev = 0; // Input power measured previously
+float Voltage_prev = 0; //Input voltage measured now
+float closed_loop = 0.02; // Input voltage measured previously
 
-float delta = 0.01;
-float delta_max = 0.01;
-float delta_min = 0.005;
-float rate_of_change_of_power = abs(Power_now-Power_prev)/delta;
-float threshold_low = 5;
+float delta = 0.01; // Initial step size of P&O
+float delta_max = 0.01; // Larger step size 
+float delta_min = 0.005; // Smaller step size 
+float rate_of_change_of_power = abs(Power_now-Power_prev)/delta; // rate of change to determine the distance from the MPP
+float threshold_low = 5; // Threshold for using larger/smaller step size
 
 unsigned int sensorValue0,sensorValue1,sensorValue2,sensorValue3;  // ADC sample values declaration
 float ev=0,cv=0,ei=0,oc=0; //internal signals
@@ -83,11 +83,10 @@ void setup() {
 
     if (Boost_mode){
       if (CL_mode) { //Closed Loop Boost
-          //////////////////////////////////////////////////////////
-//          MPPT
+        //////////////////////////////////////////////////////////
+        // MPPT
             //Pertub and Observe
           Power_now = vb * iL; // Calculate current power from Vin and IL
-
 
           if(rate_of_change_of_power < threshold_low && Power_now != 0 && Power_prev != 0)  //slope close enough to 0 => close to MPP
             delta = delta_min;      //use small step size                          
@@ -99,32 +98,31 @@ void setup() {
           if(Power_now > Power_prev)  
           {   // deltaP > 0
             if(vb > Voltage_prev && va < 18) 
-              closed_loop = closed_loop + delta;  //deltaV > 0 & deltaP > 0 => positive slope => V+
+              closed_loop = closed_loop + delta;  //deltaV > 0 & deltaP > 0 => positive slope => V increase => decrease duty cycle
             else
-              closed_loop = closed_loop - delta;  //deltaV < 0 & deltaP > 0 => negative slope => V-
+              closed_loop = closed_loop - delta;  //deltaV < 0 & deltaP > 0 => negative slope => V decrease => increase duty cycle
           }
           else  
           {   //deltaP < 0
             if(vb > Voltage_prev) 
-              closed_loop = closed_loop - delta;  //deltaV > 0 & deltaP < 0 => negative slope => V-
+              closed_loop = closed_loop - delta;  //deltaV > 0 & deltaP < 0 => negative slope => V decrease => increase duty cycle
             else if(va < 18)
-              closed_loop = closed_loop + delta;  //deltaV < 0 & deltaP < 0 => positive slope => V+
+              closed_loop = closed_loop + delta;  //deltaV < 0 & deltaP < 0 => positive slope => V increase => decrease duty cycle
           }  
            
-////          //Voltage boundaries
 
-           
-//          //Memory 
+        // Memory 
           Power_prev = Power_now; // store Power_now to be Power_prev for the next round
           Voltage_prev = vb; // store Voltage now to be Voltage_Prev for the next round
 
-          //PWM
-          closed_loop=saturation(closed_loop,0.99,0.05);
+        // PWM
+          closed_loop=saturation(closed_loop,0.99,0.1); // saturate the duty cycle from 1% to 90%
           pwm_modulate(closed_loop);
           
-          ////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////
       }
       else{ // Open Loop Boost
+        // This part is kept to test the functionality of MPPT manually
           Power_now = vb * iL; 
           Power_prev = Power_now;
           current_limit = 2; // 
