@@ -2,8 +2,7 @@
  * Modified by Zhanwen Zhang and Yuchuan Li, Group 11 EBB_Imperial in June 2023
  * Based upon code written by Yue Zhu (yue.zhu18@imperial.ac.uk) in July 2020.
  * pin6 is PWM output at 62.5kHz.
- * duty-cycle saturation is set as 2% - 98%
- * Control frequency is set as 1kHz. 
+ * duty-cycle saturation is set as 1% - 90%
 */
 
 #include <Wire.h>
@@ -23,7 +22,7 @@ float closed_loop = 0.02; // Input voltage measured previously
 float delta = 0.01; // Initial step size of P&O
 float delta_max = 0.01; // Larger step size 
 float delta_min = 0.005; // Smaller step size 
-float rate_of_change_of_power = abs(Power_now-Power_prev)/delta; // rate of change to determine the distance from the MPP
+float rate_of_change_of_power = abs(Power_now-Power_prev)/delta; // Rate of change to determine the distance from the MPP
 float threshold_low = 5; // Threshold for using larger/smaller step size
 
 unsigned int sensorValue0,sensorValue1,sensorValue2,sensorValue3;  // ADC sample values declaration
