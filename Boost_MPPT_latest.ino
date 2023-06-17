@@ -1,5 +1,5 @@
 /*
- * Modified by Yuchuan Li and Zhanwen Zhang, Group 11 EBB_Imperial in June 2023
+ * Modified by Zhanwen Zhang and Yuchuan Li, Group 11 EBB_Imperial in June 2023
  * Based upon code written by Yue Zhu (yue.zhu18@imperial.ac.uk) in July 2020.
  * pin6 is PWM output at 62.5kHz.
  * duty-cycle saturation is set as 2% - 98%
