@@ -15,6 +15,7 @@
 
 
 ## MPPT
+![Alt Text][https://github.com/EBB-Imperial/EBB-SMPS/blob/main/MPPT.pn]
 ![My image][https://github.com/EBB-Imperial/EBB-SMPS/blob/main/MPPT.png]
 ## LED Driver 
 
