@@ -1,5 +1,6 @@
 /*
  * Based upon code written by Yue Zhu (yue.zhu18@imperial.ac.uk) in July 2020.
+ * Modified by Yuchuan Li and Zhanwen Zhang 
  * pin6 is PWM output at 62.5kHz.
  * duty-cycle saturation is set as 2% - 98%
  * Control frequency is set as 1kHz. 
