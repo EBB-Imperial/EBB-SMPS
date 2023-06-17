@@ -8,7 +8,7 @@
 
 You are requested to design and build a balancing robot (segway) that can autonomously map and navigate a maze. A prototype of the design must be built and tested in the artificial maze in the lab. The maze is laid out with light strips on an arena. The arena is coloured black and surrounded by black curtains.
 
-![My Image](maze_1.png)
+![My Image][def]
 
 ## Using your LEDs from a PSU
 
@@ -23,3 +23,6 @@ You are requested to design and build a balancing robot (segway) that can autono
 ## LED Driver 
 
 
+
+
+[def]: https://github.com/EBB-Imperial/EBB-SMPS/blob/main/MPPT.png
