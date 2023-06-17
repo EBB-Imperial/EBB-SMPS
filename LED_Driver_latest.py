@@ -1,3 +1,5 @@
+# Written by Zhanwen Zhang and Yuchuan Li, Group 11 EBB_Imperial
+
 from machine import Pin, ADC, PWM
 
 vret_pin = ADC(Pin(26)) # Initializing ADC objects for measuring voltages vret on pin 26
