@@ -106,7 +106,7 @@ void setup() {
           {   //deltaP < 0
             if(vb > Voltage_prev || va > 18) 
               closed_loop = closed_loop - delta;  //deltaV > 0 & deltaP < 0 => negative slope => V-
-            if(vb > Voltage_prev && va < 18)
+            if(vb < Voltage_prev && va < 18)
               closed_loop = closed_loop + delta;  //deltaV < 0 & deltaP < 0 => positive slope => V+
           }  
            
