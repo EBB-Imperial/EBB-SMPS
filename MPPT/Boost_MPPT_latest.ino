@@ -95,19 +95,19 @@ void setup() {
               else if (Power_prev == 0 && Power_now == 0)                                   // at the very start
                   delta = delta_max; //use large step size initially
 
-          if(Power_now > Power_prev)  
+         if(Power_now > Power_prev)  
           {   // deltaP > 0
             if(vb > Voltage_prev && va < 18) 
-              closed_loop = closed_loop + delta;  //deltaV > 0 & deltaP > 0 => positive slope => V increase => decrease duty cycle
-            else
-              closed_loop = closed_loop - delta;  //deltaV < 0 & deltaP > 0 => negative slope => V decrease => increase duty cycle
+              closed_loop = closed_loop + delta;  //deltaV > 0 & deltaP > 0 => positive slope => V+
+            if(vb < Voltage_prev || va > 18)
+              closed_loop = closed_loop - delta;  //deltaV < 0 & deltaP > 0 => negative slope => V-
           }
           else  
           {   //deltaP < 0
-            if(vb > Voltage_prev) 
-              closed_loop = closed_loop - delta;  //deltaV > 0 & deltaP < 0 => negative slope => V decrease => increase duty cycle
-            else if(va < 18)
-              closed_loop = closed_loop + delta;  //deltaV < 0 & deltaP < 0 => positive slope => V increase => decrease duty cycle
+            if(vb > Voltage_prev || va > 18) 
+              closed_loop = closed_loop - delta;  //deltaV > 0 & deltaP < 0 => negative slope => V-
+            if(vb > Voltage_prev && va < 18)
+              closed_loop = closed_loop + delta;  //deltaV < 0 & deltaP < 0 => positive slope => V+
           }  
            
 
