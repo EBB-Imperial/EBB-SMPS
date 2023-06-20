@@ -18,7 +18,7 @@ pwm_ref = 0
 setpoint = 0.0
 delta = 0.05
 
-current_limit = 0.07 # Current limit in amperes, 0.07A is the lower current limit to achieve the most stable brightness
+current_limit = 0.1 # Current limit in amperes, 0.07A is the lower current limit to achieve the most stable brightness
 
 # A function to limit the PWM duty cycle to a safe range
 def saturate(duty):
@@ -46,15 +46,16 @@ while True:
     Iout=vretV/1.02  # reading the output current based on the current sensor.
 
     # Checking if the output current is too high
-    if Iout > 2 * current_limit:
+    if Iout > (2 * current_limit):
         pid_input /= 2
+        print('!!!!!!')
     # If output current is greater than limit, decrease the pid_input
     if Iout > current_limit:
-       pid_input -= 2000
+       pid_input -= 200
        pid_input = int(pid_input)
     # If output current is within the limit, increase the pid_input
     elif Iout <= current_limit:
-       pid_input += 1000
+       pid_input += 200
 
 
      
@@ -75,5 +76,5 @@ while True:
         print("Vout = {:.2f}".format(Vout))
         print("Vret = {:.2f}".format(Vret))
         print("Duty = {:.2f}".format(Pwm_out))
-        print('Iout = {:.2f}'.format(Iout))
+        print('Iout = {:.2f}'.format(Iout*1000))
         count = 0
